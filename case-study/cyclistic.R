@@ -105,7 +105,6 @@ nrow(all_trips)  #All rows
 dim(all_trips)  # data frame dimension
 head(all_trips)
 str(all_trips)
-colnames(member_casual)
 levels(all_trips$member_casual)
 all_trips <- all_trips %>%
   mutate(member_casual = factor(member_casual))
@@ -131,6 +130,7 @@ colnames(all_trips)
 all_trips$ride_length <- difftime(all_trips$ended_at, all_trips$started_at)
 # Confirm the column has been added
 str(all_trips)
+colnames(all_trips)
 
 # Convert 'ride_length from 'Factor' to 'Numeric' so we can run calculations
 is.factor(all_trips$ride_length)
@@ -157,7 +157,7 @@ min(all_trips_v2$ride_length, na.rm = TRUE) # shortest ride in seconds
 # Gives a descriptive summary of the ride_length column(condenses lines 152-155 above)
 summary(all_trips_v2$ride_length)
 
-# Compare casual users vs members
+# Compare statistics of casual users vs members
 aggregate(all_trips_v2$ride_length ~ all_trips_v2$member_casual, FUN = mean)
 aggregate(all_trips_v2$ride_length ~ all_trips_v2$member_casual, FUN = median)
 aggregate(all_trips_v2$ride_length ~ all_trips_v2$member_casual, FUN = max)
@@ -175,7 +175,7 @@ all_trips_v2$day_of_week <- ordered(all_trips_v2$day_of_week,
 # Now, let's run the average ride time by each day for members vs casual users
 aggregate(all_trips_v2$ride_length ~ all_trips_v2$member_casual + 
             all_trips_v2$day_of_week, FUN = mean)
-# The output indicates casual users have the greatest ride_length everyday
+# The output indicates casual users have the highest ride_length everyday
 
 # Ridership data by type and weekday analysis
 all_trips_v2 %>%
@@ -184,7 +184,8 @@ all_trips_v2 %>%
   summarise(number_of_rides = n(), #calculates the number of rides
             average_duration = mean(ride_length))%>% # and average duration
   arrange(member_casual, weekday) #sorts by user-type
-# The output indicates members have more ride-length on a weekly basis 
+# The output indicates casual users have less rides with more duration- seasonal
+# while the members have more rides with less duration - frequent riders
 
 # Let us visualize the number of rides by rider-type
 all_trips_v2 %>%
@@ -210,7 +211,7 @@ all_trips_v2 %>%
   labs(title = "Average Duration for each rider type")
 ggsave("fig/Average_duration.png")
 # Casual users have the highest average weekly duration 
-# Could be casual riders ride for longer distances and more time
+# Could be casual riders ride for longer distances and more time but less use
 
 
 # STEP 5: Exporting Summary file for further analysis
